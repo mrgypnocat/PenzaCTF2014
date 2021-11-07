@@ -1,0 +1,66 @@
+{% extends "base_page.html" %}
+
+{% block hightitle %}
+    Отправка флагов
+{% endblock %}
+
+{% block main %}
+
+    <div class="bs-example text-center">
+        <h3 class="text-center text-primary">
+            Отправка флагов
+        </h3>
+
+        {% if timer %}
+            <p class="h6 text-danger text-center">{{ timer }}</p>
+        {% endif %}
+        <br><br>
+
+        {% if get_form %}
+            <form class="form-horizontal" action="" accept-charset="utf-8" method="POST">
+                 {% csrf_token %}
+                <div class="form-group">
+
+                    <div class="col-sm-4 h5">
+                        <p>Формат флага: [0-9a-fA-F]{32}=$</p>
+	                    <p>Пример флага: a870502cfb1cf9fbcda84313e86f97e5=</p>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <input type="text" pattern="[0-9a-fA-F]{32}=$" class="form-control" name="flag" id="flag" placeholder="Флаг" required="">
+                    </div>
+
+                    <div class="col-sm-4 h5">
+                        {% if data %}
+		                    <p>Вы только что успешно отправили</p>
+                            <p>"{{ data }}"</p>
+	                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-4 text-center">
+                            <button class="btn btn-default text-primary" type="submit">Отправить</button>
+                    </div>
+                </div>
+
+            </form>
+
+            <br><br>
+            <p>
+            В зачет идут только флаги сервисов соперников, актуальные для текущего раунда. "Старые" и "свои" флаги не учитываются.
+            </p>
+            <p>
+            Флаги за сервисы соперников идут в зачет только при условии работоспособности аналогичных сервисов команды-отправителя.
+            </p>
+            <p>
+            Статус "ОК" означает, что ваш флаг принят для рассмотрения. Очки будут зачислены в конце раунда. Или не будут зачислены.
+            </p>
+
+    {% else %}
+        <div class="row h4 text-center text-primary">
+            [Сейчас отправка флагов невозможна]
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+{{ json }}
+
+</br></br>Round:</br>
+{{ round }}
+
+</br></br>Team flags:</br>
+{% for s in super_data %}
+    name: {{ s.service }}
+    {% for t in s.teams %}
+        </br>team: {{ t.team }}
+        </br>network_address: {{ t.network_address }}
+        </br>flag: {{ t.flag }}
+        <br>
+    {% endfor %}
+    <br>
+{% endfor %}
+</body>
+</html>

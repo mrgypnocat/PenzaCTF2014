@@ -1,0 +1,81 @@
+{% extends "base_page.html" %}
+
+{% block hightitle %}
+    Новости
+{% endblock %}
+
+{% block main %}
+<h3 class="text-center text-primary">
+    <a href="{% url 'News' %}">{{ data.caption }}</a>
+</h3>
+
+
+<div class="col-md-11">
+    <div class="bs-example">
+        <ul class="media-list">
+            <li class="media">
+                <p class="pull-left">
+                  <img src="/static/images/devteam.jpg" width="80" height="60">
+                </p>
+                <div class="media-body">
+                    <h4 class="media-heading text-muted">
+                        {{ data.datetime }}
+                        от
+                        {{ data.author }}
+                    </h4>
+                    <h4>
+                        {{ data.text |safe }}
+                    </h4>
+                    {% if data.comments %}
+                    <!-- Nested media object -->
+                        {% for c in data.comments %}
+                        <div class="media">
+                            <hr>
+                            <p class="pull-left">
+                                {% if c.image %}
+                                    <img src="/media/{{ c.image }}" width="80" height="80">
+                                {% else %}
+                                    <img src="/static/images/nophoto.jpg" width="80" height="80">
+                                {% endif %}
+                            </p>
+
+                            <div class="media-body">
+                                <h6>
+                                    <div class="text-primary">{{ c.nickname }}, команда {{ c.team }}</div>
+                                    <div class="text-muted">{{ c.datetime }}</div>
+                                </h6>
+                                <h5>
+                                    {{ c.text }}
+                                </h5>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <br>
+               {% if author %}
+                <form class="form-horizontal" action="" accept-charset="utf-8" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-1 text-center">
+                            <input type="text" class="form-control" name="nickname" value="" placeholder="Никнейм"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-1 text-center">
+                            <textarea cols="40" rows="6" class="form-control" id="text" name="text" placeholder="Текст" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-1 text-center">
+                            <button class="btn-default text-primary" type="submit">Отправить</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    <a href="javascript:scroll(0,0)">Перейти вверх страницы</a>
+</div>
+{% endblock %}

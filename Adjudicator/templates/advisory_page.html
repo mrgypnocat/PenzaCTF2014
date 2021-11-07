@@ -1,0 +1,121 @@
+{% extends "base_page.html" %}
+
+{% block hightitle %}
+    Новости
+{% endblock %}
+
+{% block main %}
+<h3 class="text-center text-primary">Адвайзори</h3>
+
+<div class="col-md-11">
+    {% if author %}
+            <form class="form-horizontal" action="" accept-charset="utf-8" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Выберите сервис</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="service_id">
+                         <option disabled>Выберите сервис</option>
+                         {% for s in services_choice %}
+                            <option value="{{ s.service_id }}">{{ s.service_name }}</option>
+                         {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="vulntext" class="col-sm-2 control-label">Описание уязвимости</label>
+                    <div class="col-sm-10">
+                        <textarea cols="40" rows="4" class="form-control" id="vulntext" name="vulntext" placeholder="Описание уязвимости" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exploittext" class="col-sm-2 control-label">Описание эксплойта</label>
+                    <div class="col-sm-10">
+                        <textarea cols="40" rows="4" class="form-control" id="exploittext" name="exploittext" placeholder="Описание эксплойта" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="defencetext" class="col-sm-2 control-label">Способы устранения уязвимости</label>
+                    <div class="col-sm-10">
+                        <textarea cols="40" rows="4" class="form-control" id="defencetext" name="defencetext" placeholder="Способы устранения уязвимости" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-default text-primary" type="submit">Отправить</button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    <div class="bs-example">
+        <ul class="media-list">
+            {% for d in data %}
+            <hr>
+            <li class="media">
+                <p class="pull-left">
+                    {% if d.image %}
+                        <img src="/media/{{ d.image }}" width="80" height="80">
+                    {% else %}
+                        <img src="/static/images/nophoto.jpg" width="80" height="80">
+                    {% endif %}
+                </p>
+                <div class="media-body">
+                    <h3 class="media-heading text-primary">
+                        Сервис {{ d.service }} ({{ d.points }} очков)
+                    </h3>
+                    <h5 class="text-muted">
+                        <p>{{ d.datetime }} от команды: {{ d.team }}</p>
+                    </h5>
+                    <h5>
+                        <p>
+                            <b>
+                                Описание уязвимости:
+                            </b>
+                        </p>
+                        {% if  d.vuln_text %}
+                            <p class="text-muted">
+                            {{ d.vuln_text }}
+                            </p>
+                        {% else %}
+                            Отсутствует
+                        {% endif %}
+                    </h5>
+                    <h5>
+                        <p>
+                            <b>
+                                Описание эксплойта:
+                            </b>
+                        </p>
+                        {% if  d.exploit_text %}
+                            <p class="text-muted">
+                            {{ d.exploit_text }}
+                            </p>
+                        {% else %}
+                            Отсутствует
+                        {% endif %}
+                    </h5>
+                    <h5>
+                        <p>
+                            <b>
+                        Способы устранения уязвимости:
+                            </b>
+                        </p>
+
+                        {% if  d.defence_text %}
+                            <p class="text-muted">
+                            {{ d.defence_text }}
+                            </p>
+                        {% else %}
+                            Отсутствует
+                        {% endif %}
+                    </h5>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <a href="javascript:scroll(0,0)">Перейти вверх страницы</a>
+</div>
+
+
+{% endblock %}

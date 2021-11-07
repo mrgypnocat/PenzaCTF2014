@@ -1,0 +1,73 @@
+{% extends "base_page.html" %}
+
+{% block hightitle %}
+    Новости
+{% endblock %}
+
+{% block main %}
+<h3 class="text-center text-primary">Новости</h3>
+
+<div class="col-md-11">
+    <div class="bs-example">
+        <ul class="media-list">
+            {% for d in data %}
+            <hr>
+            <li class="media">
+                <p class="pull-left">
+                  <img src="/static/images/devteam.jpg" width="80" height="60">
+                </p>
+
+                <div class="media-body">
+                    <h2 class="media-heading">
+                        <a href="{% url 'News' %}{{ d.new_id }}/">
+                        {{ d.caption }}
+                        </a>
+                    </h2>
+                    <h6 class="text-muted">
+                        {{ d.datetime }}
+                        от
+                        {{ d.author }}
+                    </h6>
+                    <h4>
+                        {{ d.text |safe }}
+                    </h4>
+                    {% if d.last_comment%}
+                    <!-- Nested media object -->
+                        {% for c in d.last_comment %}
+                        <div class="media">
+                            <hr>
+                            <p>Последний комментарий:</p>
+                            <p class="pull-left">
+                                {% if c.image %}
+                                    <img src="/media/{{ c.image }}" width="80" height="80">
+                                {% else %}
+                                    <img src="/static/images/nophoto.jpg" width="80" height="80">
+                                {% endif %}
+                            </p>
+
+                            <div class="media-body">
+                                <h6>
+                                    <div class="text-primary">{{ c.nickname }}, команда {{ c.team }}</div>
+                                    <div class="text-muted">{{ c.datetime }}</div>
+                                </h6>
+                                <h5>
+                                    {{ c.text }}
+                                </h5>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <br>
+                <a href="{% url 'News' %}{{ d.new_id }}/">
+                  Посмотреть все комментарии к новости {{ d.caption }} ({{ d.comments_num }})
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <a href="javascript:scroll(0,0)">Перейти вверх страницы</a>
+</div>
+
+
+{% endblock %}

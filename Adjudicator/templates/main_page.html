@@ -1,0 +1,18 @@
+{% extends "base_page.html" %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-6 text-center text-primary">
+            Привет,
+            {% if team %}
+                {{ team }}
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-center text-primary">
+            Ваш адрес:
+            {% if team_address %}
+                {{ team_address }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

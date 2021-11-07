@@ -1,0 +1,219 @@
+{% extends "base_page.html" %}
+
+{% block hightitle %}
+    Турнирная таблица
+{% endblock %}
+
+{% block main %}
+<script>
+    function fresh() {
+        location.reload();
+    }
+    setInterval("fresh()",60000);
+</script>
+<style>
+    .center-table
+    {
+      margin: 0 auto !important;
+      float: none !important;
+    }
+</style>
+<div class="row">
+
+    <div class="col-md-6 text-center">
+        {% if info.news_date %}
+
+                <a href="{% url 'News'%}">
+                    Последние новости: {{ info.news_date }} ({{ info.news_count }})
+                </a>
+
+        {% endif %}
+    </div>
+
+    <div class="col-md-6 text-center">
+        {% if info.advisory_date %}
+
+                <a href="{% url 'Advisories'%}">
+                    Последние адвайзори: {{ info.advisory_date }} ({{ info.advisory_count }})
+                </a>
+
+        {% endif %}
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-md-1 text-center"></div>
+
+    <div class="col-md-10 text-center">
+        <table class="table table-responsive table-bordered">
+            <style type="text/css">
+                .table th {
+                   text-align: center;
+                }
+            </style>
+
+            <caption>
+                <p class="h1">Турнирная таблица</p>
+                {% if timer %}
+                    <p class="h6 text-danger">{{ timer }}</p>
+                {% endif %}
+            </caption>
+
+            <thead class="h5" style="color: #dddddd;">
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Команда
+                    </th>
+                    <th>
+                        Лого
+                    </th>
+                    <th>
+                        Рейтинг
+                    </th>
+                    <th>
+                        Сервисы
+                    </th>
+                    <th>
+                        Адвайзори
+                    </th>
+                {% for service_name in services_list %}
+                    <th>
+                        {{ service_name }}
+                    </th>
+                {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody class="h5">
+            {% for d in data %}
+
+                <tr style="color: #030303;" bgcolor =#b0e0e6>
+
+                        <td style="vertical-align:middle; text-align: center;">
+                            {{ d.place }}
+                        </td>
+
+                        <td style="vertical-align:middle; text-align: center;">
+                            <div class="h4" style="color: #030303;">{{ d.team_name }}</div>
+							<div class="h6" style="color: #030303;">{{ d.team_ip }}</div>							
+                        </td>
+
+                        <td style="vertical-align:middle; text-align: center;">
+                            {% if d.team_image %}
+                                <img src="/media/{{ d.team_image }}" width="80" height="80">
+                            {% else %}
+                                <img src="/static/images/nophoto.jpg" width="80" height="80">
+                            {% endif %}
+                        </td>
+
+                        {% if d.summary_rating == 100 %}
+                            <td style="vertical-align:middle; text-align: center;" bgcolor=#54CEDF>
+                        {% else %}
+                            <td style="vertical-align:middle; text-align: center;">
+                        {% endif %}
+                                <div class="h4" style="color: #030303;">
+                                    {{ d.summary_rating }}%
+                                </div>
+                        </td>
+
+                        {% if d.services_rating == 100 %}
+                            <td style="vertical-align:middle; text-align: center;" bgcolor=#54CEDF>
+                        {% else %}
+                            <td style="vertical-align:middle; text-align: center;">
+                        {% endif %}
+                                <div class="h4" style="color: #030303;">
+                                    {{ d.services_rating }}%
+                                </div>
+                            <div class="h6" style="color: #030303;">{{ d.services_score }}</div>
+                        </td>
+
+                        {% if d.advisory_rating == 100 %}
+                            <td style="vertical-align:middle; text-align: center;" bgcolor=#54CEDF>
+                        {% else %}
+                            <td style="vertical-align:middle; text-align: center;">
+                        {% endif %}
+                            <div class="h4" style="color: #030303;">{{ d.advisory_rating }}%</div>
+                            <div class="h6" style="color: #030303;">{{ d.advisory_score }}</div>
+                        </td>
+
+
+                {% for s in d.services %}
+                    {% if s.status == '1' %}
+                        <td style="vertical-align:middle; text-align: center;" bgcolor=#00ff00>
+                    {% elif s.status == '2' %}
+                        <td style="vertical-align:middle; text-align: center;" bgcolor =#ff0000>
+                    {% else %}
+                        <td style="vertical-align:middle; text-align: center;" bgcolor =#DCDCDC>
+                    {% endif %}
+                            <div class="h4" style="color: #030303;">
+                            {% if s.verbose_status %}
+                                {{ s.verbose_status |safe }}
+                            {% endif %}
+                            </div>
+                            <div class="h6" style="color: #030303;">{{ s.points }}</div>
+                        </td>
+                {% endfor %}
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-1 text-center"></div>
+</div>
+
+<div class="row">
+
+{% if navigation.now %}
+    <ul class="pager">
+        <li class="text-muted">Раунд {{ navigation.now.number }}, начался {{ navigation.now.begin }}</li>
+    </ul>
+{% endif %}
+
+    <ul class="pager">
+    {% if navigation.prev %}
+
+        {% if navigation.first %}
+            <li><a href="{% url 'Scoreboard'%}{{ navigation.first }}/">&larr;</a></li>
+        {% endif %}
+
+        {% for p in navigation.prev %}
+            <li><a href="{% url 'Scoreboard'%}{{ p.number }}/">{{ p.number }}</a></li>
+        {% endfor %}
+
+    {% endif %}
+
+    {% if navigation.now %}
+        <li><a style="color: #2a9fd6;" href="{% url 'Scoreboard'%}{{ navigation.now.number }}/">{{ navigation.now.number }}</a></li>
+    {% endif %}
+
+    {% if navigation.next %}
+
+        {% for n in navigation.next %}
+            <li><a href="{% url 'Scoreboard'%}{{ n.number }}/">{{ n.number }}</a></li>
+        {% endfor %}
+
+        {% if navigation.last %}
+
+        <li> <a href="{% url 'Scoreboard'%}{{ navigation.last }}/">&rarr;</a></li>
+        {% endif %}
+
+    {% endif %}
+    </ul>
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+<br>
+
+<br>
